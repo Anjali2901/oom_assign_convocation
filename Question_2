@@ -1,0 +1,574 @@
+/*********QUESTION*************\
+
+For question 1, consider that the input is instead the result of a number of subjects that a student registers for. Each course has a number of credits, student’s attendance (including leave), and grade. A student passes a course if the grade is not “F” and the attendance is greater than or equal to 75. Round off the CGPA to integer before printing.
+Input Format:
+The first input is T, the number of test cases. Thereafter, for every test case the first input is n, the number of students. The input format is different for students of different types of courses.
+1.UG: The first input is the string UG, followed by roll number, name, department, period of registration.
+2. PG: The first input is the string PG, followed by roll number, name, department, specialization, period of registration and thesis area (string).
+3. UG+PG:The first input is the string UG+PG, followed by roll number, name, department, specialization, period of registration, thesis area (string) and year of conformation to postgraduation.
+4. PhD:The first input is the string PhD, followed by roll number, name, period of registration and thesis area (string).
+5. PG+PhD: The first input is the string PG+PhD, followed by roll number, name, period of registration, thesis area (string) and year of migration to doctoral program.
+
+
+After all the inputs, the next input is m, the number of results available. Each line starts with a course code, number of credits against the course, roll number of student, attendance (integer) and grade. A student cannot appear in the same course again, if he/she passes and this is validated in the inputs given.
+Output Format:
+For every test case, a variable number of lines, each line printing the roll number, name, course of study, department (if applicable), specialization (if applicable) and CGPA of a student eligible for convocation.
+
+Sample input::
+1
+4
+UG IIT2013037 Shiv IT 4
+PG IRO2015001 Himanshu IT Robotics 2 Simulation
+PhD RS113 Anup 4 Humanoids
+PG+PhD PRO2014002 Venkat 4 Planning 2
+17
+IOOM332C 40 IIT2013037 80 F
+IAAP113C 20 IRO2015001 60 A+
+IOOM332C 40 IIT2013037 95 A
+IMFR140C 10 IRO2015001 90 B+
+IAAP113C 20 RS113 80 A+
+ITOC330C 40 IIT2013037 78 A+
+IMIT140C 20 IRO2015001 80 A+
+ITOC330C 40 IIT2013037 88 F
+IAAP113C 20 IRO2015001 80 A+
+EMIP332C 40 IIT2013037 89 B
+ICSE140C 10 IRO2015001 80 A
+IMIT140C 20 RS113 80 F
+IMIT140C 20 RS113 80 A
+IOPS332C 40 IIT2013037 94 A+
+ICSE140C 10 RS113 80 B
+SMAT330C 40 IIT2013037 90 B
+IMFR140C 20 RS113 90 B+
+
+Sample output::
+2
+IIT2013037 Shiv UG IT 9
+RS113 Anup PhD
+
+
+
+/***************Solution***************\
+
+import java.util.*;
+abstract class convocation{/*this is the class which contains all common attributes of other classes like undergraduate ,postgraduate ,dual degree etc
+		this class we are using to inherit in other classes */
+	 String roll;
+	 String name;
+	 String course;
+	 convocation( String course,String roll,String name){//constructor of convocation class
+		       this.roll=roll;
+		       this.name=name;
+		       this.course=course;
+		    }
+		    /*getters and setters for convocation class*/
+	  public String getroll(){
+	         return roll;	   
+	   }
+	  public String getname(){
+		   return name;
+	   }
+     public String getcourse(){
+		  return course;
+	  }
+	   //abstract methods to be implemented in all inherited classes 
+     abstract String getdepartment();
+     abstract String getspecialisation();
+     abstract int getcgpa();
+     abstract void print();
+	 abstract int getduration();
+	 abstract String getthesis();
+	 abstract int getyear();
+}
+ 
+class UG extends convocation{   /*this is the class containing attributes of undergraduate class 
+		    all attributes are kept private and we are accessing them outside this class 
+		    using getters and setters*/
+	   private String department;
+	   private int duration;
+	   int cgpa;
+	   UG( String course,String roll,String name,String department,int duration,int cgpa){
+			//constructor for students of undergraduate category
+			super(course,roll,name);
+			this.department=department;
+			this.duration=duration;
+			this.cgpa=cgpa;
+			}
+		 public String getdepartment(){ //to get department
+			   return department;
+		   }
+		   public int getduration(){//to get duration
+			   return duration;
+		   }
+		   public void setcgpa(int c){//to set cgpa of student
+		    	 cgpa=c;
+		     }
+		  public String getspecialisation(){//to get specialisation 
+			  String s="";
+			  return s;
+		  }
+		  	 /*abstract methods from inherited class need to be overriden and this is done here*/ 
+		@Override
+			void print() {
+			
+				System.out.println(this.roll+" "+this.name+" "+this.course+" "+department+" "+this.cgpa);
+			}
+           @Override
+        int getcgpa() {
+		         return cgpa;
+          }
+		@Override
+		String getthesis() {
+			 String s="";
+			  return s;
+		}
+		@Override
+		int getyear() {
+			return 0;
+		}
+		  
+}
+ 
+class PG extends convocation{
+     /*this is the class containing attributes of postgraduate class 
+		    all attributes are kept private and we are accessing them outside this class 
+		    using getters and setters*/
+	private String department;
+	private String specialisation;
+	private int duration;
+    private String thesis;
+    int  cgpa;
+	public PG ( String course,String roll, String name, String department,String specialisation,int duration,String thesis,int cgpa){
+		//constructor of  PG class
+		super(course,roll,name);
+		this.department=department;
+		this.duration=duration;
+		this.thesis=thesis;
+		this.specialisation=specialisation;
+		this.cgpa=cgpa;
+		}
+   public String getdepartment(){//to get department
+	   return department;
+   }
+   public int getduration(){//to get duration
+	   return duration;
+   }
+   public String getspecialisation(){//to get specialisation
+		return specialisation;
+	}
+    public String getthesis(){//to get thesis
+			return thesis;
+		}
+    public void setcgpa(int c){//to set cgpa
+    	cgpa=c;
+    }
+	public int getcgpa() {//to get cgpa
+	  return cgpa;
+	}
+	
+		//overriden methods from inherited class
+	@Override
+	void print() {
+		System.out.println(this.roll+" "+this.name+" "+this.course+" "+department+" "+this.cgpa);
+	}
+	@Override
+	int getyear() {
+		return 0;
+	}
+}
+class UG_PG extends convocation{
+      /*this is the class containing attributes of UG+PG class 
+		    all attributes are kept private and we are accessing them outside this class 
+		    using getters and setters*/
+		    
+	private String department;
+	private int duration;
+	private String specialisation;
+	private String thesis;
+	private int year;
+	int cgpa;
+	public UG_PG( String course,String roll, String name, String department,String specialisation, int duration,String thesis,int year,int cgpa){
+		//constructor of  UG_PG
+		super(course,roll,name);
+		this.department=department;
+		this.duration=duration;
+		this.specialisation=specialisation;
+		this.thesis=thesis;
+		this.year=year;
+		this.cgpa=cgpa;
+		}
+		
+		//getters and setters to access private attributes  of UG_PG outside this class
+	 public String getdepartment(){
+		   return department;
+	   }
+	   public int getduration(){
+		   return duration;
+	   }
+	public String getspecialisation(){
+			return specialisation;
+		}
+		public String getthesis(){
+			return thesis;
+		}
+		public int getyear(){
+			return year;
+		}
+		 public void setcgpa(int c){
+		    	cgpa=c;
+		    }
+			public int getcgpa() {
+			  return cgpa;
+			}
+			
+				//overriden methods from inherited class
+			@Override
+			void print() {
+				
+				System.out.println(this.roll+" "+this.name+" "+this.course+" "+this.department+" "+this.specialisation+" "+this.cgpa);
+			}
+	}
+class PhD extends convocation{
+      /*this is the class containing attributes of PhD class 
+		    all attributes are kept private and we are accessing them outside this class 
+		    using getters and setters*/
+		private String course;
+		private   String roll;
+		private String name;
+		private  int period;
+		private String thesis;
+		int cgpa;
+		 PhD(String course,String roll,String name,int period,String thesis,int cgpa){	//constructor of  PhD
+         	//constructor of  PhD		
+			super(course,roll,name);
+			  this.period=period;
+			  this.thesis=thesis;
+			  this.cgpa=cgpa;
+		   }
+		   
+		   /*getters and setters for PhD class*/
+		 public String getspecialisation(){
+			  String s="";
+			  return s;
+		  }
+		 public void setcgpa(int c){
+		    	cgpa=c;
+		    }
+			public int getcgpa() {
+			  return 0;
+			}
+ 
+		   public String getthesis(){
+			   return thesis;
+		 	}
+		   public String getdepartment(){
+			   String sr="";
+			   return sr;
+		   }
+			
+	//overriden methods from inherited class
+		@Override
+		void print() {
+			
+			System.out.println(this.roll+" "+this.name+" "+this.course);
+		}
+		@Override
+		int getduration() {
+			return period;
+		}
+		@Override
+		int getyear() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+}
+class PG_PhD extends convocation{
+    
+    /*this is the class containing attributes of PG+PhD class 
+		    all attributes are kept private and we are accessing them outside this class 
+		    using getters and setters*/
+		    
+	private  int period;
+	private String thesis;
+	private int year;
+	int cgpa;
+	public PG_PhD(String course,String roll, String name, int period, String thesis,int year,int cgpa) {//constructor of  PG_PhD
+		super(course,roll,name);
+		this.period=period;
+		  this.thesis=thesis;
+		this.year=year;
+		this.cgpa=cgpa;
+		}
+	   /*getters and setters for PG_PhD class*/
+	   public String getthesis(){
+		   return thesis;
+	   }
+	   public int getyear(){
+    		return year;
+    	}
+	String getdepartment() {
+		 String s="";
+		  return s;
+	}
+	String getspecialisation() {
+		 String s="";
+		  return s;
+	}
+	 public void setcgpa(int c){
+	    	cgpa=c;
+	    }
+		public int getcgpa() {
+		  return cgpa;
+		}
+		
+		int getduration() {
+			return period;
+		}
+			//overriden methods from inherited class	
+		@Override
+		public void print() {
+			
+			System.out.println(this.roll+" "+this.name+" "+this.course+" "+this.cgpa);
+		}
+}
+class Assignment {
+    
+     //this class contains the details of all subjects and their credits ,attendance etc 
+    //based on these details we are determining if any candidate is eligible for convocation
+    
+	private String course;
+	private int credits;
+	private String rollN;
+	private int attendance;
+	private String grade;
+	int cgpa;
+	Assignment(String course,int credits,String rollN,int attendance,String grade){
+	    
+	    //constructor of assignment class
+		
+		this.course=course;
+		this.credits=credits;
+		this.rollN=rollN;
+		this.attendance=attendance;
+		this.grade=grade;
+	}
+		//getters and setters used for accessing the private attributes of assignment class 
+	 public void setcgpa(int c){
+	    	cgpa=c;
+	    }
+		public int getcgpa() {
+		  return cgpa;
+		}
+	public String getrollN(){
+		return rollN;
+	}
+	public String getcourse(){
+		return course;
+	}
+	public int getcreditsvalue(){
+	      //calculating marks based on grade as it happens in some marking scheme 
+		if(grade.equals("A+"))
+			return 10*credits;
+		if(grade.equals("A"))
+			return 9*credits;
+		if(grade.equals("B+"))
+			return 8*credits;
+		if(grade.equals("B"))
+			return 7*credits;
+		if(grade.equals("C"))
+			return 6*credits;
+		if(grade.equals("D"))
+			return 5*credits;
+		else return 0;
+	}
+	public String getgrade(){//to get grade
+		return grade;
+	}
+	public int getcredit(){//to get credits
+		return credits;
+	}
+}
+public class test {
+ 
+	static int checkcredit(int s,String c,int n){//to check credits which make student eligible for convocation
+	
+		if(c.equals("UG")){
+			if(s >= 185 && n >=4 && n<=7)return 1;
+		}
+		if(c.equals("PG"))
+		{
+			if(s >= 80 && n>=2 && n<=4 )return 1;
+		}
+		if(c.equals("UG+PG")){
+			if(s >= 265 && n>=5 && n<=8 )return 1;
+		}
+		if(c.equals("PhD")){
+			if(s >= 64 && n>=2  && n <=6 )return 1;
+		}
+		if(c.equals("PG+PhD"))
+		{
+			if(s >= 138 && n>=4 && n<=7 )return 1;
+		}
+		return 0;
+	}
+       public static void main(String[] args) {
+    	   Scanner s=new Scanner(System.in);
+   	    int t=s.nextInt();//t=testcases
+   	     for(int i=0;i<t;i++){
+   	    	 
+   	    	 int cnt=0;//counter for students
+   	    	 int n=s.nextInt();//n=number of students
+   	    	convocation c[]=new convocation[n+5];
+   	    	convocation d[]=new convocation[n+5];
+   	    	
+	    	 for(int j=0;j<n;j++){
+	    		 String st=s.next();
+	    		 if(st.equals("UG")){
+	    		     //to scan students of UG class
+	       			 
+	       			 String roll=s.next();
+	       			 String name=s.next();
+	       			 String department=s.next();
+	       			 int period=s.nextInt();
+	       			 String ss="UG";
+	       			 c[cnt]=new UG(ss,roll,name,department,period,0);
+	       			 cnt++;
+	    		 }
+	    		 if(st.equals("PG")){
+	    		     //to scan students of PG class
+	    			 
+	    			 String roll=s.next();
+	       			 String name=s.next();
+	       			 String department=s.next();
+	       			 String specialisation=s.next();
+	       			 int period=s.nextInt();
+	       			 String thesis=s.next();
+	       			 String ss="PG";
+	       			c[cnt]=new PG(ss,roll,name,department,specialisation,period,thesis,0);
+	       			cnt++;
+	    		 }
+	    		 if(st.equals("UG+PG")){
+	    		     
+	    		     //to scan students of UG+PG class
+	    			
+	    			 String roll=s.next();
+	       			 String name=s.next();
+	       			 String department=s.next();
+	       			 String specialisation=s.next();
+	       			 int period=s.nextInt();
+	       			 String thesis=s.next();
+	       			 int yearofconfront=s.nextInt();
+	       			 String ss="UG+PG";
+	       			c[cnt]=new UG_PG(ss,roll,name,department,specialisation,period,thesis,yearofconfront,0);
+	       			cnt++;
+	       			}
+	    		 if(st.equals("PhD")){
+	    		      //to scan students of PhD class
+	    		      
+	    			 String roll=s.next();
+	    			 String name=s.next();
+	    			 int period=s.nextInt();
+	    			 String thesis=s.next();
+	    			 String ss="PhD";
+	    			 c[cnt]=new PhD(ss,roll,name,period,thesis,0);
+	    			 cnt++;
+	    		 }
+	    		 if(st.equals("PG+PhD")){
+	    		     
+	    		     //to scan students of PG+PhD class
+	    		     
+	    			 String roll=s.next();
+	    			 String name=s.next();
+	    			 int period=s.nextInt();
+	    			 String thesis=s.next();
+	    			 int yearofconfront=s.nextInt();
+	    			 String ss="PG+PhD";
+	    			 c[cnt]=new PG_PhD(ss,roll,name,period,thesis,yearofconfront,0);
+	    			 cnt++;
+	       		 }
+	    	 }
+	    	 
+	    	 int m=s.nextInt();//m=number of results available
+	    	 Assignment a[]=new Assignment[m+5];
+	    	 Assignment b[]=new Assignment[m+5];
+	    	 int ct=0;//counter for eligible assignments
+	    	 for(int j=0;j<m;j++){
+	    		 int y=0;
+	    		 String course=s.next();
+	    		 int credits=s.nextInt();
+	    		 String rollN=s.next();
+	    		 int attendance=s.nextInt();
+	    		 String grade=s.next();
+	    		  
+	    		 //all the assignments are stored in array of type Assignment named b[]
+	    		 
+	    		 b[j]=new Assignment(course,credits,rollN,attendance,grade);
+	    		if(attendance>=75&&(!grade.equals("F"))){
+	    			a[ct]=new Assignment(course,credits,rollN,attendance,grade);
+	    			ct++;
+	    			//the assignments which fulfill our conditions are kept in array a[]
+	    			//in this way no piece of data is lost because we have complete data in array b 
+	    			// which can be retrieved at any time 
+	   		  	 }
+	    	 }
+	     int r=0;//count of convocation eligible students
+	    	 for(int k=0;k<cnt;k++){
+	    		 int sum=0;//calculate sum of credits * grade value
+	    		 int sm=0;//calculate total sum of credit
+	    	
+	    		 for(int j=0;j<ct;j++){
+	    			 if(c[k].getroll().equals(a[j].getrollN())){
+	    				 sum=sum+a[j].getcreditsvalue(); //this is sum of credit along with grade 
+	    				 sm=sm+a[j].getcredit();//this simply is sum of all credit 
+	    			 }
+	      		 }
+	      		 double total=(sum*1.0)/sm;
+	    		int cgpa=(int )(Math.round(total));//the cgpa is calculated 
+	    		 int x=checkcredit(sm,c[k].getcourse(),c[k].getduration());//checking the credits of eligible candidates 
+	    		 if( x == 1){     
+	    		 /*(x==1) means that the candidate is eligible for the convocation and after checking type of candidate 
+	    		          we are putting them in and array of convocation type named c[].and each time incrementing counter ,r 
+	    		          for convocation eligible students */
+	    		  if(c[k].getcourse().equals("UG")){   			  
+	    			  d[r++]=new UG("UG",c[k].getroll(),c[k].getname(),c[k].getdepartment(),c[k].getduration(),cgpa);
+	    			  }
+	    		  if(c[k].getcourse().equals("PG")){
+	    			  d[r++]=new PG("PG",c[k].getroll(),c[k].getname(),c[k].getdepartment(),c[k].getspecialisation(),c[k].getduration(),c[k].getthesis(),cgpa);
+	    		  }
+	    		  if(c[k].getcourse().equals("UG+PG")){
+	    			  d[r++]=new UG_PG("UG+PG",c[k].getroll(),c[k].getname(),c[k].getdepartment(),c[k].getspecialisation(),c[k].getduration(),c[k].getthesis(),c[k].getyear(),cgpa);;
+	    		  }
+	    		  if(c[k].getcourse().equals("PhD")){
+	    		 			  d[r++]=new PhD("PhD",c[k].getroll(),c[k].getname(),c[k].getduration(),c[k].getthesis(),0);
+	    		          
+	    		  }
+	    		  if(c[k].getcourse().equals("PG+PhD")){
+	    			  d[r++]=new PG_PhD("PG+PhD",c[k].getroll(),c[k].getname(),c[k].getduration(),c[k].getthesis(),c[k].getyear(),cgpa);
+	    		  }
+	    	   }
+	    }
+	     
+	    	 System.out.println(r);
+	    	 //print the number of convocation eligible students
+	    	 
+	    	 for(int l=0;l<r;l++){
+	    		 System.out.print(d[l].getroll()+" "+d[l].getname()+" "+d[l].getcourse());
+	    		 if( !d[l].getdepartment().equals("")){
+	    		      //since we need to print department only if it is not null 
+	    		 //so we are checking if it isn't equal to null then only printing
+	    		 System.out.print(" "+d[l].getdepartment());
+	    		 }
+	    		 if(!d[l].getspecialisation().equals(""))//since we need to print specialisation only if it is not null 
+	    		 //so we are checking if it isn't equal to null then only printing 
+	    		  System.out.print(" "+d[l].getspecialisation());
+	    		 if(d[l].getcgpa() != 0) //if cgpa isn't equal to '0' then only print cgpa
+	    		System.out.print(" "+d[l].getcgpa());
+	    		System.out.println();
+	    	 }
+	  	}
+  	 }
+}
+       
+ 
+
+
+
