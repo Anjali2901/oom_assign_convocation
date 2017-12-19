@@ -1,0 +1,754 @@
+QUESTION
+___________
+
+ 3. For the above question, consider that there are four type of courses: 
+i. Theory: Marks are given for mid-sem, end-sem, assignment, quiz, internal assessment and attendance. Total of all marks is taken. 40% is the passing marks.  ii. Lab: Marks are given for mid-sem, end-sem, viva, attendance and continuous assessment. Total of all marks is taken. In order to pass a student must get 40% overall marks and non-zero marks in mid-sem and end-sem combined.  iii. Project: Marks are given by supervisor’s marks, and marks for each panelist in mid-sem and end-sem. The total is supervisor’s marks (on a scale of 25), average marks for all panelists in mid-sem (on a scale of 19) and average marks for all panelists in end-sem (on a scale of 56). To pass a student must score at least 50% marks by the supervisor and at least 50% marks by the panel with mid-sem and end-sem combined.  
+ 
+In the above question, instead of the CGPA print the weighted addition of percentage (weighted by credits).   
+ 
+Input Format: The first part of the input format is common as per the last question. 
+ 
+The next input is m, the number of results available. The format depends upon the type of course: 
+i. Theory: The first input is the string T, followed by course code, number of credits against the course, roll number of student, attendance (integer), marks in mid-sem, end-sem, assignment, quiz, internal assessment and attendance.   ii. Lab: The first input is the string L, followed by course code, number of credits against the course, roll number of student, attendance (integer), marks in mid-sem, end-sem, viva, attendance and continuous assessment.   iii. Project: The first input is the string P, followed by course code, number of credits against the course, roll number of student, marks by supervisor, number of panelists (p), followed by p integers denoting marks of each panelist in mid-sem, followed by p integers denoting marks of each panelist in end-sem.  
+ 
+Each line starts with a course code, number of credits against the course, roll number of student, attendance (integer) and grade. A student cannot appear in the same course again, if he/she passes and this is validated in the inputs given.  
+ 
+Output Format 
+ 
+Same as previously, with the CGPA replaced by rounded of percentage (integer). Additionally, after every student print the list of courses passed in the same order as given in the input.  
+ 
+____________________________________________________________________________________________________________
+
+input
+:::::::
+1
+4
+UG IIT2013037 Shiv IT 4
+PG IRO2015001 Himanshu IT Robotics 2 Simulation
+PhD RS113 Anup 4 Humanoids
+PG+PhD PRO2014002 Venkat 4 8 75 Planning 2
+22
+T IOOM332C 25 IIT2013037 80 5 10 5 3 0 10
+T IOOM332C 25 IIT2013037 80 25 60 10 10 5 8
+T IAAP113C 10 IRO2015001 80 28 65 13 8 5 8
+T IAAP113C 10 RS113 80 10 25 10 12 5 8
+L IOPS332LC 25 IIT2013037 95 0 0 20 10 15
+T IMFR140C 10 IRO2015001 90 25 55 8 12 4 9
+T IMIT140C 20 RS113 80 15 67 10 12 4 8
+T IMIT140C 20 IRO2015001 80 10 40 10 12 4 8
+T ICSE140C 10 RS113 80 20 40 10 12 4 8
+L IOPS332LC 25 IIT2013037 95 0 20 15 10 15
+T SMAT330C 25 IIT2013037 90 28 55 8 12 4 9
+L IAAP113LC 10 IRO2015001 76 10 10 5 0 7
+L IAAP113LC 10 RS113 80 15 30 8 10 8
+P IPRJ306C 50 IIT2013037 23 3 10 12 13 54 55 50
+L IOOM332LC 25 IIT2013037 85 5 30 10 9 10
+T ITOC330C 25 IIT2013037 98 12 45 10 4 3 10
+L IAAP113LC 10 IRO2015001 80 15 10 10 5 8
+T SMAT140C 20 RS113 80 15 25 14 15 3 8
+T IAAP113C 10 IRO2015001 60 25 60 10 10 5 0
+T ICSE140C 10 IRO2015001 80 10 25 10 15 5 8
+T IOPS332C 25 IIT2013037 87 22 67 12 12 3 9
+P IPRJ312C 20 RS113 25 2 18 16 54 52
+
+
+output
+:::::::
+
+2
+IIT2013037 Shiv UG IT 74
+IOOM332C IOOM332LC IOPS332C IOPS332LC IPRJ306C ITOC330C SMAT330C
+RS113 Anup PhD
+IAAP113C IAAP113LC ICSE140C IMIT140C IPRJ312C SMAT140C
+
+
+___________
+SOLUTION
+__________
+import java.util.*;
+abstract class convocation{ 
+ 
+/*the convocation class is the class which is inherited by all other classes like UG,PG ,UG+PG etc .
+this contains common attributes like name ,roll ,course, and it is kept abstract */
+ 
+String roll;
+String name;
+String course;
+convocation( String course,String roll,String name){ //constructor of convocation class
+this.roll=roll;
+this.name=name;
+this.course=course;
+}
+ 
+/*get and set functions for attributes of convocation class so that they can
+directly be used in inherited classes and we don't need to write again*/
+public String getroll(){
+return roll;	
+}
+public String getname(){
+return name;
+}
+public String getcourse(){
+return course;
+}
+ 
+//abstract methods to be used in all inherited classes
+abstract void setcgpa(int c);
+abstract String getdepartment();
+abstract String getspecialisation();
+abstract int getcgpa();
+abstract void print();
+abstract int getduration();
+abstract String getthesis();
+abstract int getyear();
+}
+ 
+class UG extends convocation{
+// this is class containing information of students persuing undergraduate degree 
+ 
+private String department;
+private int duration;
+private int cgpa;
+UG( String course,String roll,String name,String department,int duration,int cgpa){ 
+// constructor of UG 
+ 
+super(course,roll,name);
+this.department=department;
+this.duration=duration;
+this.cgpa=cgpa;
+}
+ 
+/*getter and setter for accessing attributes of UG class outside as they are kept private */
+ 
+public String getdepartment(){
+return department;
+}
+public int getduration(){
+return duration;
+}
+public String getspecialisation(){
+String s="";
+return s;
+}
+ 
+//below are overriden methods
+ 
+@Override
+void print() {
+System.out.println(this.roll+" "+this.name+" "+this.course+" "+department+" "+this.cgpa);
+}
+@Override
+int getcgpa() {
+return cgpa;
+}
+@Override
+String getthesis() {
+String s="";
+return s;
+}
+@Override
+int getyear() {//since year is not given but it's common in all so just returned 0
+return 0;
+}
+ 
+@Override
+void setcgpa(int c) {
+cgpa=c;
+}	
+}
+ 
+class PG extends convocation{
+// this is class containing information of students persuing postgraduate degree 
+ 
+private String department;
+private String specialisation;
+private int duration;
+private String thesis;
+private int cgpa;//cgpa is percentage here 
+public PG ( String course,String roll, String name, String department,String specialisation,int duration,String thesis,int cgpa){
+super(course,roll,name);
+this.department=department;
+this.duration=duration;
+this.thesis=thesis;
+this.specialisation=specialisation;
+this.cgpa=cgpa;
+}
+ 
+ 
+//getters and setters used for accessing private attributes of this class
+public String getdepartment(){
+return department;
+}
+public int getduration(){
+return duration;
+}
+public String getspecialisation(){
+return specialisation;
+}
+public String getthesis(){
+return thesis;
+}
+ 
+public int getcgpa() {
+return cgpa;
+}
+@Override
+void print() {
+ 
+System.out.println(this.roll+" "+this.name+" "+this.course+" "+department+" "+this.cgpa);
+}
+@Override
+int getyear() {
+return 0;
+}
+@Override
+void setcgpa(int c) {
+cgpa=c;
+}
+}
+class UG_PG extends convocation{
+/*this is the class containing attributes of UG+PG class 
+all attributes are kept private and we are accessing them outside this class 
+using getters and setters*/
+private String department;
+private int duration;
+private String specialisation;
+private String thesis;
+private int year;
+private	int cgpa;
+public UG_PG( String course,String roll, String name, String department,String specialisation, int duration,String thesis,int year,int cgpa){
+super(course,roll,name);
+this.department=department;
+this.duration=duration;
+this.specialisation=specialisation;
+this.thesis=thesis;
+this.year=year;
+this.cgpa=cgpa;
+}
+ 
+//getters and setters used for accessing private attributes of this class
+public String getdepartment(){
+return department;
+}
+public int getduration(){
+return duration;
+}
+public String getspecialisation(){
+return specialisation;
+}
+public String getthesis(){
+return thesis;
+}
+public int getyear(){
+return year;
+}
+public int getcgpa() {
+return cgpa;
+}
+@Override
+void print() {
+System.out.println(this.roll+" "+this.name+" "+this.course+" "+this.department+" "+this.specialisation+" "+this.cgpa);
+}
+@Override
+void setcgpa(int c) {
+cgpa=c;
+}
+}
+class PhD extends convocation{
+/*this is the class containing attributes of PhD class 
+all attributes are kept private and we are accessing them outside this class 
+using getters and setters*/
+private String course;
+private String roll;
+private String name;
+private int period;
+private String thesis;
+private int cgpa;
+PhD(String course,String roll,String name,int period,String thesis,int cgpa){
+super(course,roll,name);
+this.period=period;
+this.thesis=thesis;
+this.cgpa=cgpa;
+}
+ 
+//getters and setters used for accessing private attributes of this class
+public String getspecialisation(){
+String s="";
+return s;
+}
+public int getcgpa() {
+return 0;
+}
+public int getperiod(){
+return period;
+}
+public String getthesis(){
+return thesis;
+}
+public String getdepartment(){
+String sr="";
+return sr;
+}
+ 
+@Override
+void print() {
+ 
+System.out.println(this.roll+" "+this.name+" "+this.course);
+}
+@Override
+int getduration() {
+return period;
+}
+@Override
+int getyear() {
+return 0;
+}
+@Override
+void setcgpa(int c) {
+cgpa=c;
+}
+}
+class PG_PhD extends convocation{
+/*this is the class containing attributes of PG+PhD class 
+all attributes are kept private and we are accessing them outside this class 
+using getters and setters*/
+ 
+private int period;
+private String thesis;
+private int year;
+private int cgpa,a,b;
+public PG_PhD(String course,String roll, String name, int period,int a,int b, String thesis,int year,int cgpa) {
+super(course,roll,name);
+this.period=period;
+this.thesis=thesis;
+this.year=year;
+this.cgpa=cgpa;
+this.a=a;
+this.b=b;
+}
+ 
+//getters and setters used for accessing private attributes of this class
+public int getperiod(){
+return period;
+}
+public String getthesis(){
+return thesis;
+}
+public int getyear(){
+return year;
+}
+ 
+ 
+String getdepartment() {
+String s="";
+return s;
+}
+String getspecialisation() {
+String s="";
+return s;
+}
+public int getcgpa() {
+return cgpa;
+}
+int getduration() {
+return period;
+}
+ 
+ 
+@Override
+void print() {
+ 
+System.out.println(this.roll+" "+this.name+" "+this.course+" "+this.cgpa);
+}
+@Override
+void setcgpa(int c) {
+cgpa=c;
+}
+}
+ 
+ 
+abstract class exam{
+//the array of this class stores result of all types LAB THEORY PROJECT
+//because they inherit exam class
+ 
+String course_code,rollN,type;
+int credits;
+exam(String type,String course_code,int credits,String rollN){
+this.type=type;
+this.course_code=course_code;
+this.credits=credits;
+this.rollN=rollN;
+}
+public String get_type(){//type is exam type i.e. Theory,lab,project
+return type;
+}
+public String getrollN(){
+return rollN;
+}
+public int getcredits(){
+return credits;
+}
+public String coursecode(){//course code is code of subject 
+return course_code;
+}
+//abstract methods that can be used by inherited classes by overriding
+abstract double get_Tmarks();
+abstract double get_mid_end();
+abstract int get_attnd();
+abstract String gettype();
+abstract int check_pass();
+abstract String getcourse();
+abstract int getcredit();
+}
+class theory extends exam{
+ 
+//theory class extended by exam class stroring all information related to result of theory exam
+ 
+private int attendance,mid_mark, end_mark,assignment_mark,quiz_mark,internal_mark,attnd_mark;
+theory(String type,String course_code, int credits, String rollN,int attendance,int mid_mark,int end_mark,int assignment_mark,int quiz_mark,int internal_mark,int attnd_mark) {
+super(type,course_code, credits, rollN);
+type="T";
+this.attendance=attendance;
+this.mid_mark=mid_mark;
+this.end_mark=end_mark;
+this.assignment_mark=assignment_mark;
+this.quiz_mark=quiz_mark;
+this.internal_mark=internal_mark;
+this.attnd_mark=attnd_mark;
+}	
+ 
+//getters and setters used for accessing private attributes of this class
+public double get_Tmarks(){
+double m=((mid_mark+end_mark+assignment_mark+quiz_mark+internal_mark+attnd_mark)*1.0)/150;
+return m;
+}
+public double get_mid_end(){
+return (mid_mark+end_mark)*1.0;
+}
+@Override
+int get_attnd() {
+return attendance;
+}
+@Override
+String gettype() {
+return type;
+}
+@Override
+int check_pass() {
+double m=(mid_mark+end_mark+assignment_mark+quiz_mark+internal_mark+attnd_mark)*1.0;
+double f=(m*100)/150;
+if(f >= 40.00 && attendance >= 75 ){
+return 1;
+}
+return 0;
+}
+@Override
+String getcourse() {
+return course_code;
+}
+@Override
+int getcredit() {
+return credits;
+}
+}
+class lab extends exam{
+//lab class extended by exam class stroring all information related to result of lab exam
+ 
+ 
+private String rollN,course_code;
+private int credits,num_student,mid_mark,end_marks,viva,attendance_mark,continueous_assessment;
+lab(String type,String course_code, int credits, String rollN,int num_student,int mid_mark,int end_marks,int viva,int attendance_mark,int continueous_assessment) {
+super(type,course_code, credits, rollN);
+type="L";
+this.num_student=num_student;
+this.mid_mark=mid_mark;
+this.end_marks=end_marks;
+this.viva=viva;
+this.course_code=course_code;
+this.credits=credits;
+this.attendance_mark=attendance_mark;
+this.continueous_assessment=continueous_assessment;
+}
+ 
+//getters and setters used for accessing private attributes of this class
+int getcredit() {
+return credits;
+}
+public double get_Tmarks(){
+double m=((mid_mark+end_marks+attendance_mark+viva+continueous_assessment)*1.0)/100;
+return m;
+}
+public double get_mid_end(){
+return (mid_mark+end_marks)*1.0;
+}
+String gettype() {
+return type;
+}
+int check_pass() {
+ 
+double m=(mid_mark+end_marks+attendance_mark+viva+continueous_assessment)*1.0;
+ 
+if(m >= 40.00 && (mid_mark+end_marks)> 0){
+return 1;
+}
+ 
+return 0;
+}
+@Override
+String getcourse() {
+return course_code;
+}
+@Override
+int get_attnd() {
+// TODO Auto-generated method stub
+return 0;
+}
+}
+class project extends exam{
+//project class extended by exam class stroring all information related to result of project exam
+ 
+private int supervisior_marks,num_panel,total_end=0,total_mid=0;
+private int mid[]=new int[100],end[]=new int[100];
+ 
+project(String type,String course_code, int credits, String rollN,int supervisior_marks,int num_panel,int mid[],int end[]) {
+ 
+//constructor of project
+super(type,course_code, credits, rollN);
+type="P";
+this.supervisior_marks=supervisior_marks;
+this.num_panel=num_panel;
+for(int r=0;r<mid.length;r++){
+this.mid[r]=mid[r];
+total_mid=total_mid+mid[r];
+}
+for(int r=0;r<mid.length;r++){
+this.end[r]=end[r];
+total_end=total_end+end[r];
+}
+}
+ 
+//getters and setters 
+int getcredit() {
+return credits;
+}
+public double get_Tmarks(){
+double m=(supervisior_marks*1.0+((total_end*1.0)/num_panel)+((total_mid*1.0)/num_panel))/100;
+return m;
+}
+String gettype() {
+return type;
+}
+@Override
+int get_attnd() {
+return 0;
+}
+int check_pass() {//check if student is pass or not
+double m=supervisior_marks*1.0+((total_end*1.0)/num_panel)+((total_mid*1.0)/num_panel);
+if( ((total_end*1.0)/num_panel)+((total_mid*1.0)/num_panel)>= 37.5 && (supervisior_marks*1.0) >= 12.5){
+return 1;
+ 
+}
+return 0;
+}
+@Override
+String getcourse() {
+return course_code;
+}
+@Override
+double get_mid_end() {
+ 
+return ((total_mid*1.0)/num_panel)+((total_end*1.0)/num_panel);
+}
+}
+ 
+public class Test {
+ 
+static int checkcredit_duration(int s,String c,int n){
+//check credit and duration of student and accordingly decide if it is eligible or not
+ 
+if(c.equals("UG")){
+if(s >= 185 && n >=4 && n<=7)return 1;
+}
+if(c.equals("PG"))
+{
+if(s >= 80 && n>=2 && n<=4 )return 1;
+}
+if(c.equals("UG+PG")){
+if(s >= 265 && n>=5 && n<=8 )return 1;
+}
+if(c.equals("PhD")){
+if(s >= 64 && n>=2 && n <=6 )return 1;
+}
+if(c.equals("PG+PhD"))
+{
+if(s >= 138 && n>=4 && n<=7 )return 1;
+}
+return 0;
+}
+ 
+ 
+public static void main(String[] args) {
+ 
+Scanner s=new Scanner(System.in);
+int t=s.nextInt();//t=testcases
+for(int i=0;i<t;i++){
+ 
+int n=s.nextInt();//n=number of students
+convocation c[]=new convocation[n+5];
+convocation d[]=new convocation[n+5];
+for(int j=0;j<n;j++){
+String st=s.next();
+ 
+//scan all students of type UG,PG,PhD,dual degree etc . and store them in convocation array c
+ 
+if(st.equals("UG")){
+String roll=s.next();
+String name=s.next();
+String department=s.next();
+int period=s.nextInt();
+String ss="UG";
+c[j]=new UG(ss,roll,name,department,period,0);
+ 
+}
+if(st.equals("PG")){
+String roll=s.next();
+String name=s.next();
+String department=s.next();
+String specialisation=s.next();
+int period=s.nextInt();
+String thesis=s.next();
+String ss="PG";
+c[j]=new PG(ss,roll,name,department,specialisation,period,thesis,0);
+ 
+}
+if(st.equals("UG+PG")){
+String roll=s.next();
+String name=s.next();
+String department=s.next();
+String specialisation=s.next();
+int period=s.nextInt();
+String thesis=s.next();
+int yearofconfront=s.nextInt();
+String ss="UG+PG";
+c[j]=new UG_PG(ss,roll,name,department,specialisation,period,thesis,yearofconfront,0);
+ 
+}
+if(st.equals("PhD")){
+String roll=s.next();
+String name=s.next();
+int period=s.nextInt();
+String thesis=s.next();
+String ss="PhD";
+c[j]=new PhD(ss,roll,name,period,thesis,0);
+}
+if(st.equals("PG+PhD")){
+String roll=s.next();
+String name=s.next();
+int period=s.nextInt();
+int a=s.nextInt();
+int b=s.nextInt();
+String thesis=s.next();
+int yearofconfront=s.nextInt();
+String ss="PG+PhD";
+c[j]=new PG_PhD(ss,roll,name,period,a,b,thesis,yearofconfront,0);
+}
+}
+ 
+int m=s.nextInt();//number of exam results 
+ 
+exam e[]=new exam[m+5];
+for(int j=0;j<m;j++)
+{ 
+//to scan all results of type lab,theory ,project
+ 
+String st=s.next();
+if(st.equals("T")){
+e[j]=new theory("T",s.next(),s.nextInt(),s.next(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt());
+}
+if(st.equals("L")){
+e[j]=new lab("L",s.next(),s.nextInt(),s.next(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt(),s.nextInt());	
+}
+if(st.equals("P")){
+String course_code=s.next();
+int credits=s.nextInt();
+String rollN=s.next();
+int supervisor_marks=s.nextInt();
+int num_panel=s.nextInt();
+int mid[]=new int[(int)num_panel];
+int end[]=new int[(int)num_panel];
+for(int k=0;k<num_panel;k++){
+mid[k]=s.nextInt();//marks of panelist in midsem
+}
+for(int k=0;k<num_panel;k++){
+end[k]=s.nextInt();//marks of panelist in midsem
+}
+e[j]=new project("P",course_code,credits,rollN,supervisor_marks,num_panel,mid,end);	
+}
+}
+ 
+int count=0;
+for(int k=0;k<n;k++){
+int sum=0;//sum of credits
+for(int j=0;j<m;j++){
+if(c[k].getroll().equals(e[j].getrollN()) && e[j].check_pass() == 1){
+sum=sum + e[j].getcredit();
+}
+}
+int x=checkcredit_duration(sum,c[k].getcourse(),c[k].getduration());//check eligibility
+ 
+if(x==1){
+d[count]=c[k];//put convocation eligible students in convocation array 'd'
+count++;
+ 
+double marks =0.0;//percentage
+for(int j=0;j<m;j++){
+if(c[k].getroll().equals(e[j].getrollN())){
+if(e[j].check_pass() == 1){
+marks=marks+(e[j].getcredit()*e[j].get_Tmarks()*1.0);
+}
+}
+}
+double percentage=(marks*100*1.0)/sum;
+marks= (int) Math.round(percentage);
+//	marks= Math.round(marks);
+c[k].setcgpa((int)marks);
+}
+}
+ 
+System.out.println(count);	//the count of eligible candidates is printed
+ 
+for(int r=0;r<count;r++){
+ 
+//print function to print name ,roll ,course ,department ,specialisation and cgpa of student
+ 
+System.out.print(d[r].getroll()+" "+d[r].getname()+" "+d[r].getcourse());
+if(!d[r].getdepartment().equals(""))
+System.out.print(" " +d[r].getdepartment());
+if(!d[r].getspecialisation().equals(""))
+System.out.print(" "+d[r].getspecialisation());
+if(d[r].getcgpa()!=0 )
+System.out.print(" "+d[r].getcgpa());
+System.out.println();
+ 
+ 
+ArrayList<String> arr =new ArrayList<String> (); //arraylist to store course in which student passes 
+ 
+int val=0;
+for(int k=0;k<m;k++)
+{
+if(d[r].getroll().equals(e[k].getrollN()) && e[k].check_pass()==1 ){
+arr.add(e[k].getcourse());//add subjects to arraylist 
+}
+}
+ 
+Collections.sort(arr);
+for(int k=0;k<arr.size();k++){
+System.out.print(arr.get(k)+" ");//print the subjects 
+}
+System.out.println();
+ 
+}
+ 
+}
+}
+}
